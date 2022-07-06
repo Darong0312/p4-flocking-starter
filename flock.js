@@ -1,4 +1,7 @@
 let flock;
+const rockColor = "#8c8c8c2";
+const sandColor = "#C2B280";
+
 
 function setup() {
   createCanvas(640, 360);
@@ -13,13 +16,14 @@ function setup() {
 }
 
 function draw() {
-  background(51);
+  background(127,205,255);
+  drawBackground();
   flock.run();
 }
 
 // Add a new boid into the System
 function mouseDragged() {
-  flock.addBoid(new Boid(mouseX, mouseY));
+  flock.addBoid(new Boid(mouseX,mouseY));
 }
 
 // The Nature of Code
@@ -55,7 +59,7 @@ function Boid(x, y) {
   this.acceleration = createVector(0, 0);
   this.velocity = createVector(random(-1, 1), random(-1, 1));
   this.position = createVector(x, y);
-  this.r = 3.0;
+  this.r = 8.0;
   this.maxspeed = 3;    // Maximum speed
   this.maxforce = 0.05; // Maximum steering force
 }
@@ -117,15 +121,25 @@ Boid.prototype.seek = function(target) {
 Boid.prototype.render = function() {
   // Draw a triangle rotated in the direction of velocity
   let theta = this.velocity.heading() + radians(90);
-  fill(127);
   stroke(200);
   push();
   translate(this.position.x, this.position.y);
   rotate(theta);
   beginShape();
+  fill(255,250,250);
+  vertex(0, -this.r + this.r);
+  vertex(-this.r, this.r * 5);
+  vertex(this.r , this.r * 5);
+  endShape(CLOSE);
+  beginShape();
+  fill(128,128,128);
   vertex(0, -this.r * 2);
-  vertex(-this.r, this.r * 2);
-  vertex(this.r, this.r * 2);
+  vertex(-this.r *2, this.r * 4);
+  vertex(this.r *2, this.r * 4);
+  endShape(CLOSE);
+  beginShape();
+  fill(255, 255, 255);
+  circle(2,10,5);
   endShape(CLOSE);
   pop();
 }
@@ -135,7 +149,7 @@ Boid.prototype.borders = function() {
   if (this.position.x < -this.r)  this.position.x = width + this.r;
   if (this.position.y < -this.r)  this.position.y = height + this.r;
   if (this.position.x > width + this.r) this.position.x = -this.r;
-  if (this.position.y > height + this.r) this.position.y = -this.r;
+  if (this.position.y > heigh + this.r) this.position.y = -this.r;
 }
 
 // Separation
@@ -222,6 +236,10 @@ Boid.prototype.cohesion = function(boids) {
 Boid.prototype.avoid = function(boids) {
   let steer = createVector(0, 0);
   if (this.position.x <= 0) {
+    if(mouseX == this.position.x){
+      console.log("true");
+    
+    }
     steer.add(createVector(1, 0));
   }
   if (this.position.x > 640) { // width of canvas
@@ -230,8 +248,87 @@ Boid.prototype.avoid = function(boids) {
   if (this.position.y <= 0) {
     steer.add(createVector(0, 1));
   }
-  if (this.position.y > 360) { // height of canvas
+  if (this.position.y + 100 > 360) { // height of canvas
     steer.add(createVector(0, -1));
   }
+//   if(this.position.x < mouseX+10 && this.position.x > mouseX-10 && this.position.x < mouseX
+//     && mouseY < height && mouseY > 0){
+//       steer.add(createVector(1, 0));
+//   }
+//   if(this.position.x < mouseX+10 && this.position.x > mouseX-10 && this.position.x >= mouseX
+//     && mouseY < height && mouseY > 0){
+//     steer.add(createVector(-1,0 ));
+// }
+//   if(this.position.y < mouseY+10 && this.position.y > mouseY-10 && this.position.y < mouseY
+//     && mouseX < width && mouseX  > 0){
+//     steer.add(createVector(0, 1));
+//   }
+//   if(this.position.y < mouseY+10 && this.position.y > mouseY-10 && this.position.y >= mouseY
+//     && mouseX < width && mouseX  > 0){
+//     steer.add(createVector(0, -1));
+//   }
   return steer;
+}
+
+function drawBackground(){
+
+  fill(157,152,128);
+  beginShape();
+  circle(width/4*3,310,50);
+  endShape();
+
+  fill(157,152,128);
+  beginShape();
+  circle(width/2,310,50);
+  circle(width/2+30,300,40);
+  endShape();
+  
+  fill(157,152,128);
+  beginShape();
+  circle(width/4,310,50);
+  circle(width/4-30,300,40);
+  endShape();
+
+  fill(186, 140, 99);
+  beginShape();
+  circle(60,300,70);
+  rect(10,0,50,500);
+  endShape();
+
+  fill(52, 140, 49);
+  beginShape();
+  vertex(width/3,315);
+  vertex(width/3,275);
+  vertex(width/3 + 50 ,315);
+
+  vertex(width/3,330);
+  vertex(width/3,280);
+  vertex(width/3 - 30 ,330);
+
+  vertex(width/3 + 10,330);
+  vertex(width/3 + 10,280);
+  vertex(width/3 + 60 ,330);
+
+  endShape();
+
+  fill(52, 140, 49);
+  beginShape();
+  vertex(width/2 + 100,315);
+  vertex(width/2 + 100,275);
+  vertex(width/2 + 150 ,315);
+
+  vertex(width/2 + 100,330);
+  vertex(width/2 + 100,280);
+  vertex(width/2 + 70 ,330);
+
+  vertex(width/2 + 110,330);
+  vertex(width/2 + 110,280);
+  vertex(width/2 + 160 ,330);
+
+  endShape();
+
+  fill(sandColor);
+  beginShape();
+  rect(0,300,width,100);
+  endShape();
 }
